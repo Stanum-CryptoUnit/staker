@@ -166,6 +166,15 @@ using namespace eosio;
     if (is_closed){
       to_pay += so -> bonus_balance;
       to_pay += so -> staked_balance;
+
+
+      action(
+        permission_level{_self, "active"_n},
+        _tokenlock,
+        name("chlbal"),
+        std::make_tuple(staker, - so -> staked_balance, uint64_t(2))
+      ).send();
+
     }
 
     eosio::check(to_pay == quantity, "Wrong quantity to pay");
@@ -258,7 +267,7 @@ using namespace eosio;
     eosio::check(code == _token_contract, "Wrong token contract for stake");
     eosio::check(quantity.symbol == _stake_symbol, "Wrong symbol for stake");
     
-    eosio::check(quantity.amount >= 1000, "Minimum amount for stake is a 1000 CRU");
+    eosio::check(quantity.amount >= 10000, "Minimum amount for stake is a 1.0000 CRU");
 
     plans_index plans(_self, _self.value);
     
@@ -322,6 +331,14 @@ using namespace eosio;
       p.total_staked += quantity;
     });
 
+    action(
+      permission_level{_self,"active"_n},
+      _tokenlock,
+      name("chlbal"),
+      std::make_tuple(staker, quantity, uint64_t(2))
+    ).send();
+
+
   };
 
 
@@ -369,12 +386,13 @@ extern "C" {
 
               uint64_t plan = atoll(op.memo.c_str());
 
-              if (op.quantity.symbol == staker::_stake_symbol) {
+              if (plan != 0)
+                if (op.quantity.symbol == staker::_stake_symbol) {
 
-                require_auth(op.from);
-                staker::stake(op.from, name(code), op.quantity, plan);
+                  require_auth(op.from);
+                  staker::stake(op.from, name(code), op.quantity, plan);
 
-              }
+                }
             }
           }
         }
