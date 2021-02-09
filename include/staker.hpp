@@ -37,7 +37,7 @@ public:
     static constexpr eosio::name _token_contract = "eosio.token"_n;
     static constexpr eosio::symbol _stake_symbol     = eosio::symbol(eosio::symbol_code("CRU"), 4);
     
-    static constexpr uint64_t _emit_limit = 3000000000;
+    static constexpr uint64_t _emit_limit = 30000000000000;
     static const uint64_t _segments_in_tick = 100000000; 
 
     static constexpr uint64_t _emit_step_in_secs = 30 * 86400;//PROD
